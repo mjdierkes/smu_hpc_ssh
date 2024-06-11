@@ -68,7 +68,7 @@ test ! -d ~/.ssh/sockets && mkdir ~/.ssh/sockets
 test -e ~/.ssh/config && chmod u+rw ~/.ssh/config || touch ~/.ssh/config
 
 config_include="Include ~/.ssh/smu_hpc_ssh/config"
-if ! grep -q "$config_include" ~/.ssh/config; then
+if ! grep -v '^#' | grep -q "$config_include" ~/.ssh/config; then
   printf "%s\n%s" "$config_include" "`cat ~/.ssh/config`" > ~/.ssh/config
 fi
 
@@ -82,6 +82,18 @@ password should not be your SMU password.\n\nNote that you will not see you
 password as your type.\n\n"
 
 proceed
+
+if test -f ~/.ssh/smu_hpc_ssh/id_ecdsa_smu_hpc
+  echo "The ssh key ~/.ssh/smu_hpc_ssh/id_ecdsa_smu_hpc already exists"
+  echo "Continuing will permanently delete the current ssh key"
+  echo "Continue? (y/N)"
+  read answer
+  if [ "$answer" != "${answer#[Yy]}" ] ;then 
+    rm ~/.ssh/smu_hpc_ssh/id_ecdsa_smu_hpc
+  else
+    exit 1
+  fi
+fi
 
 unset DISPLAY
 unset SSH_ASKPASS
