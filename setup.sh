@@ -68,7 +68,7 @@ test ! -d ~/.ssh/sockets && mkdir ~/.ssh/sockets
 test -e ~/.ssh/config && chmod u+rw ~/.ssh/config || touch ~/.ssh/config
 
 config_include="Include ~/.ssh/smu_hpc_ssh/config"
-if ! { grep -v '^#' | grep -q "$config_include" ~/.ssh/config; } then
+if ! [[ $(grep -v '^#' | grep -q "$config_include" ~/.ssh/config) ]]; then
   printf "%s\n%s" "$config_include" "`cat ~/.ssh/config`" > ~/.ssh/config
 fi
 
